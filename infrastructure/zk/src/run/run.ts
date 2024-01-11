@@ -16,6 +16,7 @@ export async function deployERC20(
     decimals?: string,
     args: any = []
 ) {
+    console.log("Start deployERC20");
     if (command == 'dev') {
         let destinationFile = 'localhost';
         if (args.includes('--envFile')) {
@@ -48,6 +49,7 @@ export async function deployERC20(
             `yarn --silent --cwd contracts/l1-contracts deploy-erc20 add --token-name ${name} --symbol ${symbol} --decimals ${decimals}`
         );
     }
+    console.log("Finish deployERC20")
 }
 
 export async function tokenInfo(address: string) {

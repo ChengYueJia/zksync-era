@@ -5,12 +5,16 @@ works. Now let's actually start using it.
 
 ## Seeing the status of the accounts
 
-Let's use a small command line tool (web3 - <https://github.com/mm-zk/web3>) to interact with our blockchains.
+Let's use a small command line tool (web3 - [https://github.com/mm-zk/web3](https://github.com/mm-zk/web3)) to interact with our blockchains.
 
 ```shell
 git clone https://github.com/mm-zk/web3
 make build
 ```
+
+Private key: 0x20677bbf8bd57a814bca86157958be03a51bd7cc93c2c5fba426490486a92231
+Public address: 0x430888817bb225aCacf00726CDe90Ab027e448a9
+
 
 Then let's create the keypair for our temporary account:
 
@@ -21,8 +25,8 @@ Then let's create the keypair for our temporary account:
 It will produce a public and private key (for example):
 
 ```
-Private key: 0x5090c024edb3bdf4ce2ebc2da96bedee925d9d77d729687e5e2d56382cf0a5a6
-Public address: 0x618263CE921F7dd5F4f40C29f6c524Aaf97b9bbd
+Private key: 0x20677bbf8bd57a814bca86157958be03a51bd7cc93c2c5fba426490486a92231
+Public address: 0x430888817bb225aCacf00726CDe90Ab027e448a9
 ```
 
 **NOTE:** Keep track of this key and address, as they will be constantly used throughout these articles
@@ -31,10 +35,10 @@ Now, let's see how many tokens we have:
 
 ```shell
 // This checks the tokens on 'L1' (geth)
-./web3 --rpc-url http://localhost:8545 balance  0x618263CE921F7dd5F4f40C29f6c524Aaf97b9bbd
+./web3 --rpc-url http://localhost:8545 balance  0x430888817bb225aCacf00726CDe90Ab027e448a9
 
 // This checks the tokens on 'L2' (zkSync)
-./web3 --rpc-url http://localhost:3050 balance  0x618263CE921F7dd5F4f40C29f6c524Aaf97b9bbd
+./web3 --rpc-url http://localhost:3050 balance  0x430888817bb225aCacf00726CDe90Ab027e448a9
 ```
 
 Unsurprisingly we have 0 on both - let's fix it by first transferring some tokens on L1:
@@ -42,13 +46,13 @@ Unsurprisingly we have 0 on both - let's fix it by first transferring some token
 ```shell
 docker container exec -it zksync-2-dev-geth-1  geth attach http://localhost:8545
 // and inside:
-eth.sendTransaction({from: personal.listAccounts[0], to: "0x618263CE921F7dd5F4f40C29f6c524Aaf97b9bbd", value: "7400000000000000000"})
+eth.sendTransaction({from: personal.listAccounts[0], to: "0x430888817bb225aCacf00726CDe90Ab027e448a9", value: "7400000000000000000"})
 ```
 
 And now when we check the balance, we should see:
 
 ```shell
-./web3 --rpc-url http://localhost:8545 balance  0x618263CE921F7dd5F4f40C29f6c524Aaf97b9bbd
+./web3 --rpc-url http://localhost:8545 balance  0x430888817bb225aCacf00726CDe90Ab027e448a9
 ```
 
 that we have 7.4 ETH.
@@ -62,14 +66,14 @@ For an easy way to bridge we'll use [zkSync CLI](https://github.com/matter-labs/
 ```shell
 npx zksync-cli bridge deposit --chain=local-dockerized
 # Amount of ETH to deposit: 3
-# Private key of the sender: 0x5090c024edb3bdf4ce2ebc2da96bedee925d9d77d729687e5e2d56382cf0a5a6
-# Recipient address on L2: 0x618263CE921F7dd5F4f40C29f6c524Aaf97b9bbd
+# Private key of the sender: 0x20677bbf8bd57a814bca86157958be03a51bd7cc93c2c5fba426490486a92231
+# Recipient address on L2: 0x430888817bb225aCacf00726CDe90Ab027e448a9
 ```
 
 If everything goes well, you should be able to see 3 tokens transferred:
 
 ```shell
-./web3 --rpc-url http://localhost:3050 balance  0x618263CE921F7dd5F4f40C29f6c524Aaf97b9bbd
+./web3 --rpc-url http://localhost:3050 balance  0x430888817bb225aCacf00726CDe90Ab027e448a9
 ```
 
 ### Diving deeper - what exactly happened
@@ -97,7 +101,7 @@ returns
   "blockHash": "0xd319b685a1a0b88545ec6df473a3efb903358ac655263868bb14b92797ea7504",
   "blockNumber": 79660,
   "chainId": "0x9",
-  "from": "0x618263ce921f7dd5f4f40c29f6c524aaf97b9bbd",
+  "from": "0x430888817bb225aCacf00726CDe90Ab027e448a9",
   "gas": 125060,
   "gasPrice": 1500000007,
   "hash": "0xe27dc466c36ad2046766e191017e7acf29e84356465feef76e821708ff18e179",
@@ -131,19 +135,19 @@ You can find more detailed description in
 
 #### requestL2Transaction Function details
 
-You can use some of the online tools (like <https://calldata-decoder.apoorv.xyz/>) and pass the input data to it - and
+You can use some of the online tools (like [https://calldata-decoder.apoorv.xyz/](https://calldata-decoder.apoorv.xyz/)) and pass the input data to it - and
 get the nice result:
 
 ```json
 "function": "requestL2Transaction(address,uint256,bytes,uint256,uint256,bytes[],address)",
 "params": [
-    "0x618263CE921F7dd5F4f40C29f6c524Aaf97b9bbd",
+    "0x430888817bb225aCacf00726CDe90Ab027e448a9",
     "3000000000000000000",
     "0x",
     "641858",
     "800",
     [],
-    "0x618263CE921F7dd5F4f40C29f6c524Aaf97b9bbd"
+    "0x430888817bb225aCacf00726CDe90Ab027e448a9"
   ]
 
 ```

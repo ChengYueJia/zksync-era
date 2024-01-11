@@ -2,6 +2,7 @@ import { Command } from 'commander';
 import * as utils from './utils';
 import * as env from './env';
 import fs from 'fs';
+import {deployERC20} from "./run/run";
 
 export async function build() {
     await utils.spawn('yarn l1-contracts build');
@@ -16,6 +17,15 @@ export async function verifyL1Contracts() {
         return;
     }
     await utils.spawn('yarn l1-contracts verify');
+}
+
+export async function verifyAllContracts() {
+    // Spawning a new script is expensive, so if we know that publishing is disabled, it's better to not launch
+    // it at all (even though `verify` checks the network as well).
+    console.log('Skip contract verification on localhost');
+
+    await utils.spawn('yarn l1-contracts verify');
+    await utils.spawn('yarn l2-contracts verify');
 }
 
 function updateContractsEnv(deployLog: String, envVars: Array<string>) {
@@ -155,11 +165,38 @@ export async function deployVerifier(args: any[]) {
 export const command = new Command('contract').description('contract management');
 
 command
-    .command('redeploy [deploy-opts...]')
-    .allowUnknownOption(true)
-    .description('redeploy contracts')
+    .command('redeployL1 [deploy-opts...]')
+    .allowUnknownOption(true).description('redeploy L1 contracts')
     .action(redeployL1);
-command.command('deploy [deploy-opts...]').allowUnknownOption(true).description('deploy contracts').action(deployL1);
-command.command('build').description('build contracts').action(build);
-command.command('initialize-validator').description('initialize validator').action(initializeValidator);
-command.command('verify').description('verify L1 contracts').action(verifyL1Contracts);
+
+command
+    .command('deployL1 [deploy-opts...]')
+    .allowUnknownOption(true).description('deploying L1 verifier')
+    .action(deployL1);
+command
+    .command('deployL2 [deploy-opts...]')
+    .allowUnknownOption(true).description('deploying L1 verifier')
+    .action(() => {
+        deployL2([], true, true);
+    });
+
+command
+    .command('deployERC20 [deploy-opts...]')
+    .allowUnknownOption(true).description('Deploying localhost ERC20 tokens')
+    // .action(deployERC20);
+    .action(() => {
+        deployERC20('dev', '', '', '', []);
+    });
+
+command
+    .command('build')
+    .description('build contracts')
+    .action(build);
+command
+    .command('initialize-validator')
+    .description('initialize validator')
+    .action(initializeValidator);
+command
+    .command('verify')
+    .description('verify all contracts')
+    .action(verifyAllContracts);
