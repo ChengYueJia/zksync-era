@@ -11,8 +11,14 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
 # All necessary stuff
 sudo apt-get install build-essential pkg-config cmake clang lldb lld libssl-dev postgresql
+## If your docker only support docker-compose to install this plugin to support `docker compose`.
+sudo apt-get install docker-compose-plugin # Failed to follow: https://stackoverflow.com/questions/76031884/sudo-apt-get-install-docker-compose-plugin-fails-on-jammy
+
 # Docker
-sudo usermod -aG docker YOUR_USER
+sudo usermod -aG docker ${USER}
+
+# solc.
+sudo snap install solc --classic
 
 ## You might need to re-connect (due to usermod change).
 
@@ -27,7 +33,24 @@ cargo install sqlx-cli --version 0.7.3
 sudo systemctl stop postgresql
 # Start docker.
 sudo systemctl start docker
+
 ```
+* ENV VAR
+To run this repo, need export ENV vars:
+```bash
+
+# 1. Export ZKSYNC_HOME to you ~/.bashrc and source it.
+export ZKSYNC_HOME=/path/to/zksync/repo/you/cloned 
+export PATH=$ZKSYNC_HOME/bin:$PATH
+
+# 2. Add to /etc/hosts
+127.0.0.1 geth
+127.0.0.1 postgres
+
+
+
+```
+
 
 ## Supported operating systems
 
