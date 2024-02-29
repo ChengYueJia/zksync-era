@@ -154,12 +154,12 @@ pub fn verify_proof(
         );
         tracing::error!("{}", msg);
         panic!("{}", msg);
-    } else{
+    } else {
         tracing::info!(
-        "Successfully verify fri proof, job: {}, verify time taken: {:?}",
-        job_id,
-        cost
-    );
+            "Successfully verify fri proof, job: {}, verify time taken: {:?}",
+            job_id,
+            cost
+        );
     }
 }
 
